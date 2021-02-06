@@ -7,7 +7,6 @@
 
 #include "s4i_tools.h"
 #include "xparameters.h"
-#include <stdlib.h>
 
 #include <xgpio.h>
 
@@ -39,11 +38,29 @@ int s4i_is_cmd_sws(char *buf)
     // Un indice : Allez voir les mÅ½thodes similaires dans web_utils.c.
 }
 
+int s4i_is_analyse_bpm(char *buf)
+{
+	return !strncmp(buf, "GET /analyse/bpm", 16);
+}
+
+int s4i_is_analyse_o2(char *buf)
+{
+	return !strncmp(buf, "GET /analyse/o2", 15);
+}
+
+int s4i_is_analyse_etat_sommeil(char *buf)
+{
+	return !strncmp(buf, "GET /analyse/etat_sommeil", 25);
+}
+
+int s4i_is_analyse_activite_physique(char *buf)
+{
+	return !strncmp(buf, "GET /analyse/activite_physique", 30);
+}
+
 unsigned int s4i_get_sws_state()
 {
     // Retourne l'Å½tat des 4 interrupteurs dans un entier (un bit par
     // interrupteur).
     return XGpio_DiscreteRead(&s4i_xgpio_input_sws, 1);
 }
-
-
