@@ -187,7 +187,7 @@ int do_http_get(int sd, char *req, int rlen)
 
         // TODO: Remplir sw_buf avec l'etat des interrupteurs.
         // Un indice : Utilisez sprintf et strcat.
-        sprintf(switch_state_buff, "{switches: [%u, %u, %u, %u]}", bit_array[0], bit_array[1], bit_array[2], bit_array[3]);
+        sprintf(switch_state_buff, "{\"switches\": [%u, %u, %u, %u]}", bit_array[0], bit_array[1], bit_array[2], bit_array[3]);
         //strcat(sw_buf, switch_state_buff);
 
 
@@ -206,6 +206,66 @@ int do_http_get(int sd, char *req, int rlen)
             return -1;
         }
 
+    } else if (s4i_is_analyse_activite_physique(req)) {
+
+    	char mouv_buf[20];
+    	sprintf(mouv_buf, "{%s}", get_mouv_donnee());
+
+    	unsigned int mouv_len = strlen(mouv_buf);
+    	unsigned int len = generate_http_header(buf, "js", mouv_len);
+    	strcat(buf, mouv_buf);
+    	len += mouv_len;
+
+    	 if (lwip_write(sd, buf, len) != len) {
+    		 xil_printf("Error writing GET response to socket\r\n");
+    	     xil_printf("http header = %s\r\n", buf);
+    	     return -1;
+    	  }
+    } else if (s4i_is_analyse_zone_cardiaque(req)) {
+
+    	char zone_buf[20];
+    	sprintf(zone_buf, "{%s}", get_zone_cardiaque());
+
+    	unsigned int zone_len = strlen(zone_buf);
+    	unsigned int len = generate_http_header(buf, "js", zone_len);
+    	strcat(buf, zone_buf);
+    	len += zone_len;
+
+    	 if (lwip_write(sd, buf, len) != len) {
+    		 xil_printf("Error writing GET response to socket\r\n");
+    	     xil_printf("http header = %s\r\n", buf);
+    	     return -1;
+    	  }
+    } else if (s4i_is_analyse_bpm(req)) {
+
+    	char bpm_buf[10];
+    	sprintf(bpm_buf, "{%d}", get_bpm());
+
+    	unsigned int bpm_len = strlen(bpm_buf);
+    	unsigned int len = generate_http_header(buf, "js", bpm_len);
+    	strcat(buf, bpm_buf);
+    	len += bpm_len;
+
+    	 if (lwip_write(sd, buf, len) != len) {
+    		 xil_printf("Error writing GET response to socket\r\n");
+    	     xil_printf("http header = %s\r\n", buf);
+    	     return -1;
+    	  }
+    } else if (s4i_is_analyse_o2(req)) {
+
+    	char o2_buf[10];
+    	sprintf(o2_buf, "{%d}", get_o2());
+
+    	unsigned int o2_len = strlen(o2_buf);
+    	unsigned int len = generate_http_header(buf, "js", o2_len);
+    	strcat(buf, o2_buf);
+    	len += o2_len;
+
+    	 if (lwip_write(sd, buf, len) != len) {
+    		 xil_printf("Error writing GET response to socket\r\n");
+    	     xil_printf("http header = %s\r\n", buf);
+    	     return -1;
+    	  }
     } else {
         // Si la requête n'est pas un point d'accès ("route") connu, on tente de
         // charger un fichier depuis la carte microSD.

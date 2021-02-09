@@ -9,8 +9,10 @@
 #include "xparameters.h"
 
 #include <xgpio.h>
+#include <stdlib.h>
 
 XGpio s4i_xgpio_input_sws;
+
 
 void s4i_init_hw()
 {
@@ -43,6 +45,10 @@ int s4i_is_analyse_bpm(char *buf)
 	return !strncmp(buf, "GET /analyse/bpm", 16);
 }
 
+int s4i_is_analyse_zone_cardiaque(char* buf) {
+	return !strncmp(buf, "GET /analyse/zone_cardiaque", 27);
+}
+
 int s4i_is_analyse_o2(char *buf)
 {
 	return !strncmp(buf, "GET /analyse/o2", 15);
@@ -64,3 +70,45 @@ unsigned int s4i_get_sws_state()
     // interrupteur).
     return XGpio_DiscreteRead(&s4i_xgpio_input_sws, 1);
 }
+
+char* get_mouv_donnee() {
+
+	// Pour l'instant on génère un nombre et on choisi le niveau d'activité selon ce dernier
+	int niv_act = rand() % 3;
+
+	if (niv_act == 0) {
+		return "Sédentaire";
+	} else if (niv_act == 1) {
+		return "Activité physique moyenne";
+	} else {
+		return "Acivité physique intense";
+	}
+
+}
+
+char* get_zone_cardiaque() {
+	int zone_card = rand() % 4;
+
+	if (zone_card == 0) {
+		return "Aucune";
+	} else if (zone_card == 1) {
+		return "Cardio";
+	} else if (zone_card == 2){
+		return "Brulure de graisse";
+	} else {
+		return "Maximale";
+	}
+}
+
+int get_bpm()
+{
+	int rythme = rand() % 80 + 50;
+
+	return rythme;
+}
+
+int get_o2()
+{
+	return rand() % 5 + 95;
+}
+
