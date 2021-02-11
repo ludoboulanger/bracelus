@@ -64,6 +64,10 @@ int s4i_is_analyse_activite_physique(char *buf)
 	return !strncmp(buf, "GET /analyse/activite_physique", 30);
 }
 
+int s4i_is_reminder(char* buf) {
+	return !strncmp(buf, "GET /analyse/rappel", 19);
+}
+
 unsigned int s4i_get_sws_state()
 {
     // Retourne l'Å½tat des 4 interrupteurs dans un entier (un bit par
@@ -84,6 +88,11 @@ char* get_mouv_donnee() {
 		return "Acivité physique intense";
 	}
 
+}
+
+int get_reminder() {
+	// En realite, retournes 0 ou 1 dependamment de si on a un reminder de bouger ou non
+	return 0;
 }
 
 char* get_zone_cardiaque() {

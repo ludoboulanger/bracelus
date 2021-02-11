@@ -208,8 +208,8 @@ int do_http_get(int sd, char *req, int rlen)
 
     } else if (s4i_is_analyse_activite_physique(req)) {
 
-    	char mouv_buf[20];
-    	sprintf(mouv_buf, "{%s}", get_mouv_donnee());
+    	char mouv_buf[50];
+    	sprintf(mouv_buf, "{\"niveau\": \"%s\"}", get_mouv_donnee());
 
     	unsigned int mouv_len = strlen(mouv_buf);
     	unsigned int len = generate_http_header(buf, "js", mouv_len);
@@ -221,10 +221,25 @@ int do_http_get(int sd, char *req, int rlen)
     	     xil_printf("http header = %s\r\n", buf);
     	     return -1;
     	  }
+    } else if (s4i_is_reminder(req)) {
+
+    	char rem_buf[50];
+    	sprintf(rem_buf, "{\"rappel\": \"%d\"}", get_reminder());
+
+    	unsigned int rem_len = strlen(rem_buf);
+    	unsigned int len = generate_http_header(buf, "js", rem_len);
+    	strcat(buf, rem_buf);
+    	len += rem_len;
+
+    	 if (lwip_write(sd, buf, len) != len) {
+    		 xil_printf("Error writing GET response to socket\r\n");
+    	     xil_printf("http header = %s\r\n", buf);
+    	     return -1;
+    	  }
     } else if (s4i_is_analyse_zone_cardiaque(req)) {
 
-    	char zone_buf[20];
-    	sprintf(zone_buf, "{%s}", get_zone_cardiaque());
+    	char zone_buf[50];
+    	sprintf(zone_buf, "{\"zone\": \"%s\"}", get_zone_cardiaque());
 
     	unsigned int zone_len = strlen(zone_buf);
     	unsigned int len = generate_http_header(buf, "js", zone_len);
@@ -238,8 +253,8 @@ int do_http_get(int sd, char *req, int rlen)
     	  }
     } else if (s4i_is_analyse_bpm(req)) {
 
-    	char bpm_buf[10];
-    	sprintf(bpm_buf, "{%d}", get_bpm());
+    	char bpm_buf[15];
+    	sprintf(bpm_buf, "{\"bpm\": %d}", get_bpm());
 
     	unsigned int bpm_len = strlen(bpm_buf);
     	unsigned int len = generate_http_header(buf, "js", bpm_len);
@@ -253,8 +268,8 @@ int do_http_get(int sd, char *req, int rlen)
     	  }
     } else if (s4i_is_analyse_o2(req)) {
 
-    	char o2_buf[10];
-    	sprintf(o2_buf, "{%d}", get_o2());
+    	char o2_buf[15];
+    	sprintf(o2_buf, "{\"o2\": %d}", get_o2());
 
     	unsigned int o2_len = strlen(o2_buf);
     	unsigned int len = generate_http_header(buf, "js", o2_len);
